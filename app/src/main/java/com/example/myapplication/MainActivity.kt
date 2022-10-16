@@ -1,92 +1,58 @@
 package com.example.myapplication
 
-import android.accounts.AuthenticatorDescription
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.unit.*
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val painter = painterResource(id = R.drawable.kermit_in_the_snow)
-            val description = "Kermit in the snow"
-            val title = "Kermit is playing in snow"
-            Box(
-                modifier = Modifier.fillMaxSize(0.5f).padding(16.dp)
-            ){
-                ImageCard(
-                    painter=painter,
-                    contentDescription = description,
-                    title=title
-                )
+            val scaffoldState = rememberScaffoldState()
+            var textFieldState by remember {
+                mutableStateOf("")
             }
+            val scope = rememberCoroutineScope()
 
-        }
-    }
-}
-
-@Composable
-fun ImageCard(
-    painter: Painter,
-    contentDescription: String,
-    title: String,
-    modifier: Modifier=Modifier
-){
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(20.dp),
-        elevation= 5.dp) {
-        Box(modifier = Modifier.height(250.dp)){
-            Image(painter = painter,
-                contentDescription = contentDescription,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-            Box(modifier = Modifier
-                .fillMaxSize(0.5f)
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Transparent,
-                            Color.Black
-                        ),
-                        startY = 300f
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                scaffoldState = scaffoldState
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 30.dp)
+                ) {
+                    TextField(
+                        value = textFieldState,
+                        label = {
+                            Text("Enter Your Name")
+                        },
+                        onValueChange = {
+                            textFieldState = it
+                        },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
                     )
-                )
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(3.dp),
-                contentAlignment = Alignment.BottomStart
-            ){
-                Text(title, style= TextStyle(color = Color.White, fontSize = 16.sp))
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(onClick = {
+                        scope.launch {
+                            scaffoldState.snackbarHostState.showSnackbar("Hello $textFieldState")
+                        }
+                    }) {
+                        Text("Please Greet Me")
+                    }
+                }
             }
         }
     }
