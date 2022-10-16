@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 
@@ -18,12 +20,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
 
-            val scrollState = rememberScrollState()
-            Column(
-                modifier = Modifier.verticalScroll(scrollState)
-            ){
-                for(i in 1..50) {
-                    Text(text = "Item $i",
+            LazyColumn{
+                itemsIndexed(
+                    listOf("This", "is", "JetPack", "Compose")
+                ){
+                    index, string->
+                    Text(text = string,
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
@@ -32,6 +34,7 @@ class MainActivity : ComponentActivity() {
                             .padding(vertical = 24.dp)
                     )
                 }
+
             }
         }
     }
