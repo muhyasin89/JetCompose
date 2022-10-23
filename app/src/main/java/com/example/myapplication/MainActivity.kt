@@ -1,54 +1,52 @@
 package com.example.myapplication
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.OnBackPressedCallback
-import androidx.activity.OnBackPressedDispatcher
+
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+
 
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.*
+import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.text.font.*
 import androidx.compose.ui.text.style.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val scaffoldState = rememberScaffoldState()
-            val scope = rememberCoroutineScope()
-            Scaffold(scaffoldState=scaffoldState) {
-//                var counter by remember{
-//                    mutableStateOf(0)
-//                }
-
-                var counter = produceState(initialValue = 0){
-                    delay(3000L)
-                    value = 4
+            var sizeState by remember {
+                    mutableStateOf(200.dp)
                 }
-
-                if(counter.value % 5 == 0 && counter.value > 0 ){
-                    LaunchedEffect(key1 = scaffoldState.snackbarHostState) {
-                        scaffoldState.snackbarHostState.showSnackbar("Hello")
-                    }
-
-                }
-
-                Button(onClick = {}){
-                    Text("Click Me: $counter.value}")
+            val size by animateDpAsState(
+                targetValue = sizeState,
+                tween(
+                    durationMillis = 3000,
+                    delayMillis = 300,
+                    easing = LinearOutSlowInEasing
+                )
+            )
+            Box(modifier = Modifier
+                    .size(sizeState)
+                    .background(Red),
+                contentAlignment = Alignment.Center) {
+                Button(onClick = { sizeState += 50.dp }) {
+                    Text("Increase Size")
                 }
             }
         }
     }
 }
+
 
 
